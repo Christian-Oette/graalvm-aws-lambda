@@ -23,9 +23,15 @@ A GraalVm optimized AWS Lambda function
 
    mvn package
 
+Leave the container (exit)
+
 Rename the Bootrap executable to lowercase and put it in a bootstrap.zip file. Or just call
 
    prepareZip.sh
+
+## Add your domain
+
+Open the template.yaml and configure your domain and ssl certificate
 
 ## Deploy
 
@@ -41,6 +47,8 @@ https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/s
 ### Test
 
 Go to api gateway in the s3 console and search for your cloudfront domain 
+
+   https://{ID}.execute-api.eu-central-1.amazonaws.com/prod/hello 
 
 If you want to test my integration
 

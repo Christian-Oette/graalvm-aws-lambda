@@ -7,7 +7,7 @@ Description: >
 
 Metadata:
   AWS::ServerlessRepo::Application:
-    Name: graalvm-lambda-sam-app
+    Name: graalvm-lambda-app
     Description: A hello world lambda function written in java which can be compiled and deployed with a native graalvm image
     Author: Christian Oette
     Labels: ['tests']
@@ -24,7 +24,7 @@ Globals:
   Function:
     Timeout: 5
 
-Parameters:
+#Parameters:
   #DomainName:
     #Type: String
     #Default: graalvmlambda.christianoette.com
@@ -59,7 +59,7 @@ Resources:
     Properties:
       CodeUri: ./HelloWorldFunction/target/bootstrap.zip
       Handler: com.christianoette.App::handleRequest
-      Runtime: java11
+      Runtime: provided
       MemorySize: 512
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
