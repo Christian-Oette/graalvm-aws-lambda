@@ -56,9 +56,7 @@ https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/s
 Eventually update the file samconfig.toml!
 
 ```
-   sam package --template-file template.yaml --output-template-file packaged.yaml --s3-bucket {YOUR-BUCKET-NAME}
-   
-   sam publish --template packaged.yaml --region eu-central-1
+   sam package --template-file template.yaml --output-template-file packaged.yaml --s3-bucket {YOUR-BUCKET-NAME}      
    
    sam deploy --s3-bucket {YOUR-BUCKET-NAME} --capabilities CAPABILITY_IAM
 ```
