@@ -12,17 +12,30 @@ import java.io.StringWriter;
 
 public class Bootstrap {
 
+    public static final String RUNTIME_INVOCATION = "/2018-06-01/runtime/invocation";
+    public static final String RUNTIME_INVOCATION_NEXT = RUNTIME_INVOCATION + "/next";
+    public static final String LAMBDA_RUNTIME_AWS_REQUEST_ID_HEADER_KEY = "Lambda-Runtime-Aws-Request-Id";
+
+    // For unit tests
     private boolean runEndless = true;
+    private String runtimeAPIHostPort;
+
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public void setRunEndless(boolean runEndless) {
         this.runEndless = runEndless;
     }
 
+    public void setRuntimeAPIHostPort(String runtimeAPIHostPort) {
+        this.runtimeAPIHostPort = runtimeAPIHostPort;
+    }
+
     public void execute() {
 
-        var runtimeAPIHostPort = System.getenv("AWS_LAMBDA_RUNTIME_API");
-        var endPointGet = "http://" + runtimeAPIHostPort + "/2018-06-01/runtime/invocation/next";
+        if (runtimeAPIHostPort==null) {
+            runtimeAPIHostPort = System.getenv("AWS_LAMBDA_RUNTIME_API");
+        }
+        var endPointGet = "http://" + runtimeAPIHostPort + RUNTIME_INVOCATION_NEXT;
         var templateEndPointPostOk = "http://" + runtimeAPIHostPort + "/2018-06-01/runtime/invocation/{AwsRequestId}/response";
         var templateEndPointPostError = "http://" + runtimeAPIHostPort + "/2018-06-01/runtime/invocation/{AwsRequestId}/error";
         var endPointPostInitError = "http://" + runtimeAPIHostPort + "/2018-06-01/runtime/init/error";
@@ -52,7 +65,7 @@ public class Bootstrap {
                 Response response = client.newCall(request).execute();
 
 
-                var requestId = response.header("Lambda-Runtime-Aws-Request-Id");
+                var requestId = response.header(LAMBDA_RUNTIME_AWS_REQUEST_ID_HEADER_KEY);
                 var endPointPostOk = templateEndPointPostOk.replace("{AwsRequestId}", requestId);
                 var handlerResponse = handler.handleRequest(response.body().toString());
 
