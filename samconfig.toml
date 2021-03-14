@@ -1,0 +1,9 @@
+version = 1.0
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "aws-lambda-graalvm-optimized"
+s3_bucket = "changeme"
+s3_prefix = ""
+region = "eu-central-1"
+capabilities = "CAPABILITY_IAM"

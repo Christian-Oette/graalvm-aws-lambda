@@ -1,0 +1,84 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  GraalVm optimized lambda function
+
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html
+
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: graalvm-lambda-sam-app
+    Description: A hello world lambda function written in java which can be compiled and deployed with a native graalvm image
+    Author: Christian Oette
+    Labels: ['tests']
+    SemanticVersion: '1.0.0'
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'GET,POST,OPTIONS'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
+      AllowCredentials: "'*'"
+  Function:
+    Timeout: 5
+
+Parameters:
+  #DomainName:
+    #Type: String
+    #Default: graalvmlambda.christianoette.com
+  #HostedZoneName:
+    #Type: String
+    #Default: christianoette.com. # don't miss the  dot at the end
+  #CertificateArnUsEast:
+    #Type: String
+    #Default: arn:aws:acm:us-east-1:788348322794:certificate/a18f98e9-2173-4d47-ab55-5878ced6f175
+  #CertificateArnEUCentral:
+    #Type: String
+    #Default: arn:aws:acm:eu-central-1:788348322794:certificate/2b27357f-99a5-4006-a7db-085692047b27
+
+Resources:
+  ServerlessAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+        AllowCredentials: "'*'"
+      #Domain:
+        #DomainName: !Ref DomainName
+        #CertificateArn: !Ref CertificateArnEUCentral
+        #Route53:
+          #HostedZoneName: !Ref HostedZoneName
+
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: ./HelloWorldFunction/target/bootstrap.zip
+      Handler: com.christianoette.App::handleRequest
+      Runtime: java11
+      MemorySize: 512
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /hello
+            Method: get
+            RestApiId: !Ref ServerlessAPI
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  HelloWorldFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt HelloWorldFunction.Arn
+  HelloWorldFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt HelloWorldFunctionRole.Arn
