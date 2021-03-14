@@ -38,6 +38,9 @@ Open the template.yaml and configure your domain and ssl certificate
 You need to have aws cli configured in your shell and sam installed
 https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started.html
 
+Eventually update the file samconfig.toml!
+
+
    sam package --template-file template.yaml --output-template-file packaged.yaml --s3-bucket {YOUR-BUCKET-NAME}
    
    sam publish --template packaged.yaml --region eu-central-1
